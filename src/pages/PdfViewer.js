@@ -5,10 +5,11 @@ import { Box } from "@mui/system";
 import { Button, Tooltip, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  clearErrors,
   fetchPdfDetails,
   removePdfDetails,
 } from "../features/pdfUpload/pdfUploadSlice";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Loader from "../assets/loading.svg";
 import {
   Rotate90DegreesCcw,
@@ -24,6 +25,7 @@ import { grey } from "@mui/material/colors";
 const PdfViewer = () => {
   const { pdfId } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { pdfDetails, status } = useSelector((state) => state.pdfUpload);
 
   const handle = useFullScreenHandle();
@@ -35,10 +37,13 @@ const PdfViewer = () => {
 
   const onDocumentComplete = (numPages) => {
     setPages(numPages);
+    dispatch(clearErrors());
   };
 
   const onDocumentError = (err) => {
     console.error("pdf viewer error:", err);
+    dispatch(clearErrors());
+    navigate("/");
   };
 
   const onSetScale = (type) => {
@@ -192,13 +197,12 @@ const PdfViewer = () => {
             alignItems: "center",
             justifyContent: "center",
             height: "80vh",
-            marginTop: 5
+            marginTop: 5,
           }}
         >
-          {status == "LOADING" && (
+          {status == "LOADING" ? (
             <img style={{ zIndex: 999 }} src={Loader} alt='Loading...' />
-          )}
-          {pdfDetails?.filePublicUrl && (
+          ) : pdfDetails?.filePublicUrl ? (
             <PDF
               file={pdfDetails?.filePublicUrl}
               onDocumentComplete={onDocumentComplete}
@@ -207,7 +211,7 @@ const PdfViewer = () => {
               scale={scale}
               rotate={rotate}
             />
-          )}
+          ) : null}
         </Box>
       </Box>
     </FullScreen>

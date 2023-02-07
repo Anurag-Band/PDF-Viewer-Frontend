@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import { store } from "./store/store";
 import { Box } from "@mui/material";
 import PdfViewer from "./pages/PdfViewer";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const dispatch = useDispatch();
@@ -47,6 +48,7 @@ function App() {
           <Route path='/pdf-viewer/:pdfId' element={<PdfViewer />} />
         </Route>
       </Routes>
+      <ToastContainer />
     </Box>
   );
 }

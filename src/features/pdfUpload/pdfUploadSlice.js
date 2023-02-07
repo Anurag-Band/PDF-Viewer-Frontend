@@ -17,6 +17,7 @@ export const pdfUploadSlice = createSlice({
     clearErrors: (state) => {
       state.status = "IDLE";
       state.uploadError = null;
+      state.allPdfError = null;
     },
     removePdfDetails: (state) => {
       state.pdfDetails = null;
@@ -54,7 +55,6 @@ export const pdfUploadSlice = createSlice({
       })
       .addCase(fetchPdfDetails.fulfilled, (state, action) => {
         state.pdfDetails = action.payload;
-        state.status = "IDLE";
       })
       .addCase(fetchPdfDetails.rejected, (state, action) => {
         state.allPdfError = action.payload;
