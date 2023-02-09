@@ -15,15 +15,13 @@ import { ToastContainer } from "react-toastify";
 
 function App() {
   const dispatch = useDispatch();
-  const { status, isAuthenticated, errorMessage, user } = useSelector(
-    (state) => state.auth
-  );
+  const { status, errorMessage } = useSelector((state) => state.auth);
   useEffect(() => {
     store.dispatch(loadUser());
   }, [dispatch]);
 
   useEffect(() => {
-    if (status != "ERROR") {
+    if (status === "ERROR") {
       setTimeout(() => {
         dispatch(clearErrors());
       }, 2000);

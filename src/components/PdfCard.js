@@ -1,7 +1,7 @@
 import React from "react";
 import CommentIcon from "@mui/icons-material/Comment";
 import { Box, Typography } from "@mui/material";
-import { blue, blueGrey, grey } from "@mui/material/colors";
+import { blueGrey, grey } from "@mui/material/colors";
 import { Link } from "react-router-dom";
 
 export default function PdfCard({ file }) {
