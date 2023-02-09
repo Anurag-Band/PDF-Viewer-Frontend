@@ -10,29 +10,15 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useDispatch, useSelector } from "react-redux";
-import { Alert } from "@mui/material";
-import { clearErrors } from "../features/pdfUpload/pdfUploadSlice";
 import { signin } from "../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
+import { unwrapResult } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 
 export default function SignIn() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { status, errorMessage, user, isAuthenticated } = useSelector(
-    (state) => state.auth
-  );
-
-  useEffect(() => {
-    if (status != "ERROR") {
-      setTimeout(() => {
-        dispatch(clearErrors());
-      }, 2000);
-    }
-
-    if (isAuthenticated) {
-      navigate("/");
-    }
-  }, [status, dispatch, errorMessage, isAuthenticated]);
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
@@ -43,13 +29,32 @@ export default function SignIn() {
     formData.append("username", username);
     formData.append("password", password);
 
-    dispatch(signin(Object.fromEntries(formData)));
-
-    setUserName("");
-    setPassword("");
-
-    navigate("/");
+    dispatch(signin(Object.fromEntries(formData)))
+      .then(unwrapResult)
+      .then(() => {
+        setUserName("");
+        setPassword("");
+        navigate("/");
+      })
+      .catch((err) => {
+        toast.error(err, {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      });
   };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [navigate, isAuthenticated]);
 
   return (
     <Container component='main' maxWidth='xs'>
@@ -93,9 +98,6 @@ export default function SignIn() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <Grid item xs={12}>
-            {errorMessage && <Alert severity='error'>{errorMessage}</Alert>}
-          </Grid>
           <Button
             type='submit'
             fullWidth

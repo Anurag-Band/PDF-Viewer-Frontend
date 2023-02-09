@@ -1,4 +1,3 @@
-// import { loadUser } from "../features/auth/authSlice";
 import {
   clearErrors,
   getAllPdfs,
@@ -6,33 +5,31 @@ import {
 } from "../features/pdfUpload/pdfUploadSlice";
 import { UploadFile } from "@mui/icons-material";
 import { Box, Button, Container, CssBaseline, Typography } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PdfCard from "../components/PdfCard";
 import { unwrapResult } from "@reduxjs/toolkit";
 import Loader from "../assets/loading.svg";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import UploadLoading from "../assets/upload-loading.svg";
 
 export default function Home() {
   const filePickerRef = useRef(null);
-  const [selectedPDF, setSelectedPDF] = useState(null);
 
   const dispatch = useDispatch();
-  const { status, isAuthenticated, errorMessage, user } = useSelector(
-    (state) => state.auth
-  );
+  const { status } = useSelector((state) => state.auth);
   const { isUploading, uploadError, allPdfs, allPdfError } = useSelector(
     (state) => state.pdfUpload
   );
 
   useEffect(() => {
-    if (status != "ERROR") {
+    if (status === "ERROR" || uploadError || allPdfError) {
       setTimeout(() => {
         dispatch(clearErrors());
       }, 2000);
     }
-  }, [status, dispatch, errorMessage]);
+  }, [status, dispatch, uploadError, allPdfError]);
 
   useEffect(() => {
     dispatch(getAllPdfs());
@@ -41,7 +38,6 @@ export default function Home() {
   const handlePdfUpload = (e) => {
     if (e.target.files[0]) {
       const file = e.target.files[0];
-      setSelectedPDF(file);
       let formData = new FormData();
       formData.append("file", file);
 
@@ -60,8 +56,6 @@ export default function Home() {
             theme: "colored",
           });
         });
-
-      setSelectedPDF(null);
     }
   };
 
@@ -95,14 +89,21 @@ export default function Home() {
           }}
         >
           <Button
-            // disabled={selectedPDF}
             onClick={() => filePickerRef.current.click()}
             variant='outlined'
             sx={{
-              width: 220,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 230,
+              height: 50,
+              padding: "5px 25px",
+              position: "relative",
             }}
           >
-            <UploadFile sx={{ mr: 2 }} />
+            <UploadFile
+              sx={{ position: "absolute", left: 15, fontSize: 26 }}
+            />
             <Typography
               variant='h6'
               color='inherit'
@@ -110,7 +111,19 @@ export default function Home() {
               fontSize={20}
               fontWeight={400}
             >
-              Upload PDF
+              {isUploading ? (
+                <img
+                  src={UploadLoading}
+                  alt='Loading...'
+                  width={"35px"}
+                  height={"35px"}
+                  style={{
+                    marginTop: "5px",
+                  }}
+                />
+              ) : (
+                "Upload PDF"
+              )}
               <input
                 type='file'
                 name='file'

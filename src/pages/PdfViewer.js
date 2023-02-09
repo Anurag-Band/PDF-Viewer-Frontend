@@ -37,7 +37,6 @@ const PdfViewer = () => {
 
   const onDocumentComplete = (numPages) => {
     setPages(numPages);
-    dispatch(clearErrors());
   };
 
   const onDocumentError = (err) => {
@@ -200,7 +199,7 @@ const PdfViewer = () => {
             marginTop: 5,
           }}
         >
-          {status == "LOADING" ? (
+          {status === "LOADING" ? (
             <img style={{ zIndex: 999 }} src={Loader} alt='Loading...' />
           ) : pdfDetails?.filePublicUrl ? (
             <PDF
