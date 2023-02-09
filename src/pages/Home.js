@@ -82,6 +82,7 @@ export default function Home() {
           width: "100%",
           display: "flex",
           flexDirection: "column",
+          marginBottom: 10,
         }}
       >
         {/* Upload Button Section */}

@@ -55,6 +55,7 @@ export const pdfUploadSlice = createSlice({
       })
       .addCase(fetchPdfDetails.fulfilled, (state, action) => {
         state.pdfDetails = action.payload;
+        state.status = "IDLE";
       })
       .addCase(fetchPdfDetails.rejected, (state, action) => {
         state.allPdfError = action.payload;
