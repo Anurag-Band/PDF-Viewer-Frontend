@@ -5,8 +5,9 @@ const Axios = axios.create({
   timeout: 8000,
   headers: {
     Accept: "application/json",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Credentials": true,
   },
-  withCredentials: true
 });
 
 export default Axios;
